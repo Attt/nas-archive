@@ -1,0 +1,9 @@
+# sample config file
+client: # qb web client config
+  host: localhost
+  port: 8080
+  user: admin
+  passwd: adminadmin
+qb:
+  target_path: C:\Users\Administrator\Downloads\TargetDir
+interval: 30 # in minutes
