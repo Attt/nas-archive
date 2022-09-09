@@ -116,7 +116,7 @@ def moveSeededFiles():
         for torrent in qbt_client.torrents_info():
             _debug.logger.info(f'{torrent.hash[-6:]} info: \n\t |- name {torrent.name}\n\t |- state {torrent.state}\n')
             print(f'\033[7;30;47m{torrent.hash[-6:]}\033[0m info: \n\t |- \033[1;33;40m name {torrent.name}\033[0m\n\t |- \033[1;33;40m state {torrent.state}\033[0m\n')
-            if torrent.state == 'pausedUP' :
+            if torrent.state == 'pausedUP' and torrent.seeding_time_limit == 0 :
                 ## path
                 _from = os.path.join(torrent.save_path, torrent.name)
                 _to = os.path.join(target_path, torrent.hash[-6:] + '_' + torrent.name)
