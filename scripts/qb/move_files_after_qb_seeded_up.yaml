@@ -4,6 +4,5 @@ client: # qb web client config
   port: 8080
   user: admin
   passwd: adminadmin
-qb:
-  target_path: C:\Users\Administrator\Downloads\TargetDir
+target_path: C:\Users\Administrator\Downloads\TargetDir
 interval: 30 # in minutes
