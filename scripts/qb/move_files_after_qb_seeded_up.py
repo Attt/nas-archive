@@ -149,7 +149,7 @@ def moveSeededFiles():
             _debug.logger.info(f'{torrent.hash[-6:]} info: \n\t |- name {torrent.name}\n\t |- state {torrent.state}\n')
             print(f'\033[7;30;47m{torrent.hash[-6:]}\033[0m info: \n\t |- \033[1;33;40m name {torrent.name}\033[0m\n\t |- \033[1;33;40m state {torrent.state}\033[0m\n')
             # move files if torrent is downloaded and not moved yet
-            if torrent.is_complete and not isFilesMoved(torrent.hash):
+            if torrent.state_enum.is_complete and not isFilesMoved(torrent.hash):
                 ## path
                 _from = os.path.join(torrent.save_path, torrent.name)
                 _to = os.path.join(target_path, torrent.name)
