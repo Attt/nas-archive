@@ -6,7 +6,7 @@
 
 - input: none
 - config: ./move_files_after_qb_seeded_up.yaml
-- output: ./all.log, ./error.log
+- output: ./all.log, ./error.log ./qb.moved
 - requirements:
     - pip install pyyaml, schedule, qbittorrent-api, colorama
 
@@ -59,6 +59,7 @@ username='admin'
 password='adminadmin'
 target_path="C:\\Users\\Administrator\\Downloads\\TargetDir"
 interval=30
+files_moved=set()
 
 # read from config file
 with open("move_files_after_qb_seeded_up.yaml","r") as f:
@@ -67,7 +68,7 @@ with open("move_files_after_qb_seeded_up.yaml","r") as f:
     port = config["client"]["port"]
     username = config["client"]["user"]
     password = config["client"]["passwd"]
-    target_path = config["qb"]["target_path"]
+    target_path = config["target_path"]
     interval = config["interval"]
     print(f'\033[1;37;41m[**Warning**]\033[0mconfigs read from file:')
     print(f'\t - host:\t\033[1;37;41m{host}\033[0m')
@@ -76,6 +77,7 @@ with open("move_files_after_qb_seeded_up.yaml","r") as f:
     print(f'\t - password:\t\033[1;37;41m{password}\033[0m')
     print(f'\t - target path:\t\033[1;37;41m{target_path}\033[0m')
     print(f'\t - interval:\t\033[1;37;41m{interval}\033[0m')
+    f.close()
 
 print('instantiate qb client')
 # instantiate a Client using the appropriate WebUI configuration
@@ -107,6 +109,36 @@ def printQbClientInfo():
 connectToQbClient()
 printQbClientInfo()
 
+def isFilesMoved(torHash):
+    return torHash in files_moved
+
+def discardFilesMoved(torHash):
+    files_moved.discard(torHash)
+    with open("qb.moved",mode='w') as dat:
+        # dat.write('')
+        # dat.flush()
+        for hash in files_moved:
+            dat.writelines(hash + '\n')
+        dat.close()
+
+
+def markFilesMoved(torHash):
+    if not os.path.exists('qb.moved'):
+        open('qb.moved', 'w').close()
+    with open("qb.moved",mode='r') as dat:
+        files_moved.clear()
+        for hash in dat.readlines():
+            hash = hash.strip()
+            if hash.__len__ != 0:
+                files_moved.add(hash)
+        dat.close()
+    if torHash != '-1' and torHash not in files_moved:
+        with open("qb.moved",mode='a') as dat:
+            dat.writelines(torHash + '\n')
+            dat.close()
+
+markFilesMoved('-1') # pass `-1` to load data from file
+
 # job function
 def moveSeededFiles():
     try:
@@ -116,10 +148,11 @@ def moveSeededFiles():
         for torrent in qbt_client.torrents_info():
             _debug.logger.info(f'{torrent.hash[-6:]} info: \n\t |- name {torrent.name}\n\t |- state {torrent.state}\n')
             print(f'\033[7;30;47m{torrent.hash[-6:]}\033[0m info: \n\t |- \033[1;33;40m name {torrent.name}\033[0m\n\t |- \033[1;33;40m state {torrent.state}\033[0m\n')
-            if torrent.state == 'pausedUP' and torrent.seeding_time_limit == 0 :
+            # move files if torrent is downloaded
+            if torrent.is_complete :
                 ## path
                 _from = os.path.join(torrent.save_path, torrent.name)
-                _to = os.path.join(target_path, torrent.hash[-6:] + '_' + torrent.name)
+                _to = os.path.join(target_path, torrent.name)
 
                 _debug.logger.info(f'move tor {torrent.hash} files \n\t >- from {_from}\n\t >- to {_to}')
                 print(f'move tor \033[7;30;47m{torrent.hash}\033[0m files \n\t >- from \033[1;32;40m {_from}\033[0m\n\t >- to \033[1;32;40m {_to}\033[0m\n\n')
@@ -130,8 +163,16 @@ def moveSeededFiles():
                 else:
                     shutil.copy2(_from, _to)
                 
+                # mark files moved
+                markFilesMoved(torrent.hash)
+            
+            if torrent.state == 'pausedUP' and isFilesMoved(torrent.hash):
+                _debug.logger.info(f'delete tor {torrent.hash} files \n\t >- {_from}')
+                print(f'delete tor \033[7;30;47m{torrent.hash}\033[0m files \n\t >- from \033[1;32;40m {_from}\033[0m\n\n')
                 torrent.delete(True) # delete torrent and files
                 # shutil.rmtree(torrent.save_path) # call qb client delete api instead
+                discardFilesMoved(torrent.hash) # remove deleted tor files data
+
     except Exception as e:
         print(e)
         _err.logger.error(f'\033[1;37;41m[error occurred due to {e}\033[0m')
