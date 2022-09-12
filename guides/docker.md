@@ -76,6 +76,30 @@
 	--log-driver "json-file"    \
 	--log-opt "max-size=100m" `# 限制docker控制台日志大小，可自行调整`     allanpk716/chinesesubfinder
  ```
+ 
+ ## auto_bangumi
+ ```bash
+sudo docker run -d \
+    --name=AutoBangumi \
+    -p 7892:7892 \
+    -e 'TZ=Asia/Shanghai' \
+    -e 'AB_INTERVAL_TIME=7200' \
+    -e 'AB_DOWNLOADER_HOST=attt.w:8081' \
+    -e 'AB_DOWNLOADER_USERNAME=attt' \
+    -e 'AB_DOWNLOADER_PASSWORD=atttqbpasswd' \
+    -e 'AB_METHOD=none' \
+    -e 'AB_GROUP_TAG=True' \
+    -e 'AB_DOWNLOAD_PATH=C:\Users\Administrator\Downloads\qb_downloads' \
+    -e 'AB_NOT_CONTAIN=\d+-\d+' \
+    -e 'AB_ENABLE_TMDB=False' \
+    -e 'AB_WEBUI_PORT=7892' \
+    -e 'AB_RENAME=False' \
+    -e 'AB_RSS=https://mikanani.me/RSS/MyBangumi?token=NnrUGYwhyPzNDGXCrk%2fOfQ%3d%3d' \
+    -v /home/attt/docker/auto_bangumi/config:/config \
+    --dns=8.8.8.8 \
+    --restart unless-stopped \
+    estrellaxd/auto_bangumi:latest
+ ```
 
 # Configuration
 ## nas-tools
