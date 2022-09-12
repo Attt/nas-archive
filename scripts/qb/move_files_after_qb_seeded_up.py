@@ -136,6 +136,7 @@ def markFilesMoved(torHash):
         with open("qb.moved",mode='a') as dat:
             dat.writelines(torHash + '\n')
             dat.close()
+        files_moved.add(torHash)
 
 markFilesMoved('-1') # pass `-1` to load data from file
 
