@@ -256,6 +256,8 @@ def updateDNSPod():
                 _debug.logger.info('skipped due to dns value is already set')
                 ## persist the latest v6 address
                 persistAddress(dns_value)
+                ## update local var
+                v6_address = dns_value
                 return
             
             ## check record_id is correctly fetched
