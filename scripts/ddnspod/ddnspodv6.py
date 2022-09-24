@@ -233,6 +233,8 @@ def updateDNSPod():
                 sendEmergencyMail(newV6_address, message)
                 print(f'xxxxxx \t failed to request record api!!!: \033[1;37;41m{message}\033[0m\n')
                 print(f'\033[1;37;41mskipped due to record request failed {message}\033[0m\n')
+                _debug.logger.info(f'xxxxxx \t failed to request record api!!!: {message}')
+                _debug.logger.info(f'skipped due to record request failed {message}')
                 return
 
             ## get record id and record_line_id and value
@@ -250,6 +252,10 @@ def updateDNSPod():
             if dns_value == newV6_address:
                 print(f'<<<<<< \t dns value is already set to \033[1;37;41m{dns_value}\033[0m\n')
                 print('\033[1;37;41mskipped due to dns value is already set\033[0m\n')
+                _debug.logger.info(f'<<<<<< \t dns value is already set to {dns_value}')
+                _debug.logger.info('skipped due to dns value is already set')
+                ## persist the latest v6 address
+                persistAddress(dns_value)
                 return
             
             ## check record_id is correctly fetched
@@ -258,9 +264,12 @@ def updateDNSPod():
                 sendEmergencyMail(newV6_address, 'can not parse record_id from ddns api body!!')
                 print(f'xxxxxx \t record id is is ILLEGAL!!!: \033[1;37;41m{record_id}\033[0m\n')
                 print('\033[1;37;41mskipped due to record id illegal\033[0m\n')
+                _debug.logger.info(f'xxxxxx \t record id is is ILLEGAL!!!: {record_id}')
+                _debug.logger.info('skipped due to record id illegal')
                 return
 
             print(f'>>>>>> \t dns record id is {record_id} and record line id is {record_line_id}\n')
+            _debug.logger.info(f'>>>>>> \t dns record id is {record_id} and record line id is {record_line_id}')
 
             ## now to update dns record value
             payload = {'login_token':dnspod_token, 'format':'json', 'domain':domain, 'sub_domain':sub_domain, 'record_id': record_id,'record_line_id':record_line_id, 'value': newV6_address}
@@ -274,6 +283,8 @@ def updateDNSPod():
                 sendEmergencyMail(newV6_address, message)
                 print(f'xxxxxx \t failed to request ddns api!!!: \033[1;37;41m{message}\033[0m\n')
                 print(f'\033[1;37;41mskipped due to ddns request failed {message}\033[0m\n')
+                _debug.logger.info(f'xxxxxx \t failed to request ddns api!!!: {message}')
+                _debug.logger.info(f'skipped due to ddns request failed {message}')
                 return
            
             print(f'>>>>>> \t dns record updated with \033[7;30;47m{newV6_address}\033[0m\n')
