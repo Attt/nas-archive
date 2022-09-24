@@ -1,0 +1,20 @@
+dnspod:
+  record_api: 'https://dnsapi.cn/Record.List'
+  ddns_api: 'https://dnsapi.cn/Record.Ddns'
+  token: '{id},{token}'
+v6_test_url:
+  - https://6.ipw.cn
+  - https://ipv6.ddnspod.com
+  - https://speed.neu6.edu.cn/getIP.php
+user_agent: 'Atpex DDNS Client/1.0.0(atpexgo@hotmail.com)' ## due to dnspod api issue, useless now
+domain: abcd.com.cn
+sub_domain: www
+prefix_to_check: '2408:' ## start with
+mail:
+  smtp_server: 'smtp.yourserver.com'
+  smtp_port: 587
+  user: 'you@email.com'
+  pass: 'yourpass' # 微软的邮箱要先开启两步验证，然后在安全(https://account.live.com/proofs/Manage/additional?mkt=zh-cn)里面添加应用密码
+  to_address: 'you@destmail.com'
+  is_starttls: true
+interval: 30 # every 30 mins
