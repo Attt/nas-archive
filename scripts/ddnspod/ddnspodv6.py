@@ -41,7 +41,7 @@ class Logger(object):
         'crit':logging.CRITICAL
     } # map logging level
 
-    def __init__(self,filename,level='info',fmt='%(asctime)s - %(pathname)s [:%(lineno)d] - %(levelname)s: %(message)s'):
+    def __init__(self,filename,level='info',fmt='%(asctime)s - [:%(lineno)d] - %(levelname)s: %(message)s'):
         self.logger = logging.getLogger(filename)
         self.logger.setLevel(self.level_relations.get(level)) # set log level
         
@@ -162,8 +162,8 @@ def sendAddressChangeMail(address, before):
 def getWanV6():
     for test_url in v6_test_url:
         x = requests.get(test_url)
+        newV6_address = x.text
         if newV6_address.startswith(prefix_to_check):
-            newV6_address = x.text
             return newV6_address
     sendEmergencyMail('unknown', 'all v6 test url is false')
     # newV6_address = mockGetWanV6()
