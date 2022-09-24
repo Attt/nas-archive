@@ -292,8 +292,8 @@ def updateDNSPod():
         _err.logger.error(f'\033[1;37;41m[error occurred due to {e}\033[0m')
 
 
-#schedule.every(interval).minutes.do(updateDNSPod) # run scheduled job every ${interval} mins
-schedule.every(interval).seconds.do(updateDNSPod) # too frequency only for test
+schedule.every(interval).minutes.do(updateDNSPod) # run scheduled job every ${interval} mins
+# schedule.every(interval).seconds.do(updateDNSPod) # too frequency only for test
 
 while True:
     schedule.run_pending()   # run all jobs
