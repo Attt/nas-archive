@@ -8,7 +8,10 @@ v6_test_url:
   - https://speed.neu6.edu.cn/getIP.php
 user_agent: 'Atpex DDNS Client/1.0.0(atpexgo@hotmail.com)' ## due to dnspod api issue, useless now
 domain: abcd.com.cn
-sub_domain: www
+sub_domain: 
+  - www
+  - blog
+  - api
 prefix_to_check: '2408:' ## start with
 mail:
   smtp_server: 'smtp.yourserver.com'
