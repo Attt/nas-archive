@@ -218,8 +218,8 @@ def updateDNSPod():
 
         ## nothing changed
         if newV6_address == v6_address:
-            print('------ \t \033[1;37;41mskipped due to address not changed\033[0m\n')
-            _debug.logger.info('------ \t skipped due to address not changed')
+            print('------ \t \033[1;37;41mskipped due to address has not changed yet\033[0m\n')
+            _debug.logger.info('------ \t skipped due to address has not changed yet')
         else:
             ## update dns AAAA record
             ## fetch record list api first to get record_id and record_line_id and present AAAA value
@@ -323,6 +323,8 @@ def updateDNSPod():
         print(e)
         _err.logger.error(f'\033[1;37;41m[error occurred due to {e}\033[0m')
 
+# run at first
+updateDNSPod()
 
 schedule.every(interval).minutes.do(updateDNSPod) # run scheduled job every ${interval} mins
 # schedule.every(interval).seconds.do(updateDNSPod) # too frequency only for test
