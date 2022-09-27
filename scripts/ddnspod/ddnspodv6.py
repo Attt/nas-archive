@@ -189,8 +189,6 @@ def getLatestAddress():
                 _debug.logger.info(f'latest address read from file is {v6_address}')
         dat.close()
 
-getLatestAddress() # init v6_address from file
-
 def persistAddress(address):
     if address.__len__ != 0:
         with open("v6.address",mode='w') as dat:
@@ -323,7 +321,10 @@ def updateDNSPod():
         print(e)
         _err.logger.error(f'\033[1;37;41m[error occurred due to {e}\033[0m')
 
-# run at first
+# init v6_address from file      
+getLatestAddress()
+
+# run once at startup
 updateDNSPod()
 
 schedule.every(interval).minutes.do(updateDNSPod) # run scheduled job every ${interval} mins
